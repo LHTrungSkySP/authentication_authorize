@@ -1,4 +1,5 @@
 ﻿using Application.Accounts.Dto;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Application.Accounts.Commands
 {
-    public class UpdateAccountCommand : IRequest<AccountDto>
+    public class UpdateAccountCommand : AccountDto, IRequest<AccountDto>
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
+        public string PasswordNew { get; set; }
+        public string PasswordOld { get; set; }
+        public List<AssignGroup> AssignGroups { get; set; } = new List<AssignGroup>();
     }
 }

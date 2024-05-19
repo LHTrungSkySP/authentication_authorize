@@ -2,6 +2,8 @@
 using Application.AATemp.Dto;
 using Application.Accounts.Commands;
 using Application.Accounts.Dto;
+using AutoMapper;
+using Infrastructure;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,8 +13,16 @@ using System.Threading.Tasks;
 
 namespace Application.AATemp.CommandHandlers
 {
-    public class UpdateTempCommandHandler : IRequestHandler<UpdateTempCommand, TempDto>
+    public class UpdateAssignPermissionCommandHandler : IRequestHandler<UpdateTempCommand, TempDto>
     {
+        private BanHangContext _context;
+        private readonly IMapper _mapper;
+
+        public UpdateAssignPermissionCommandHandler(BanHangContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
         public Task<TempDto> Handle(UpdateTempCommand request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

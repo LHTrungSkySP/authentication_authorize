@@ -32,7 +32,12 @@ namespace Application.Permissions.CommandHandlers
                     );
             permission.Title = request.Title;
             permission.Description = request.Description;
-            permission.UpdatesdDate = new DateTime();
+            permission.AssignPermissions = request.GroupPermissionIds.Select(item => new AssignPermission()
+            {
+                PermissionId = permission.Id,
+                GroupPermissionId = item
+            }).ToList();
+
             _context.Permissions.Update(permission);
             _context.SaveChanges();
             return _mapper.Map<PermissionDto>(permission);

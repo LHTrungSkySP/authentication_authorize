@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Permissions.CommandHandlers
 {
-    public class DeletePermissionCommandHandler : IRequestHandler<DeletePermissionCommand>
+    public class DeletePermissionCommandHandler : IRequestHandler<DeletePermissionCommand,PermissionDto>
     {
         private BanHangContext _context;
         private readonly IMapper _mapper;

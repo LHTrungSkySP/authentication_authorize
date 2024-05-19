@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Application.AATemp.CommandHandlers
 {
-    public class UpdatePermissionCommandHandler: IRequestHandler<CreateTempCommand, TempDto>
+    public class CreateTempCommandHandler : IRequestHandler<CreateTempCommand, TempDto>
     {
         private BanHangContext _context;
         private readonly IMapper _mapper;
 
-        public UpdatePermissionCommandHandler(BanHangContext context, IMapper mapper)
+        public CreateTempCommandHandler(BanHangContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

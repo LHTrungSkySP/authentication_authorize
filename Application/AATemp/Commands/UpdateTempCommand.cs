@@ -10,5 +10,6 @@ namespace Application.AATemp.Commands
 {
     public class UpdateTempCommand : IRequest<TempDto>
     {
+
     }
 }

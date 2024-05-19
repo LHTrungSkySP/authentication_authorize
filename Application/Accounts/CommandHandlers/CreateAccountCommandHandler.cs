@@ -1,17 +1,11 @@
 ﻿using Application.Accounts.Commands;
 using Application.Accounts.Dto;
-using Application.Authenticates.Queries;
 using AutoMapper;
 using Common.Exceptions;
 using Domain.Entities;
 using Infrastructure;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utility.Authorizations;
+using Microsoft.Identity.Client;
 
 namespace Application.Accounts.CommandHandlers
 {
@@ -27,20 +21,29 @@ namespace Application.Accounts.CommandHandlers
         }
         public async Task<AccountDto> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
-
-            if (!_context.Accounts.Any(x => x.Name == request.Name))
+            if (_context.Accounts.Any(ele => ele.Name == request.Name))
             {
-                Account account = new Account();
-                account.Name = request.Name;
-                account.Password = request.Password;
-                //account = _mapper.Map<Account>(request);
-                account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-                _context.Accounts.Add(account);
-                _context.SaveChanges();
-                return _mapper.Map<AccountDto>(account);
+                throw new AppException(
+                    ExceptionCode.Duplicate,
+                    "Đã tồn tại Account " + request.Name,
+                                        new[] {
+                        new ErrorDetail(
+                            nameof(request.Name),
+                            request.Name)
+                    }
+                    );
             }
-            else
-                throw new AppException("Tên đăng nhập " + request.Name + " đã được sử dụng!");
+            Account account = new Account();
+            account.Name = request.Name;
+            account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            account.AssignGroup = request.groupPermissionId.Select(t => new AssignGroup()
+            {
+                AccountId = account.Id,
+                GroupPermissionId = t
+            }).ToList();
+            _context.Accounts.Add(account);
+            _context.SaveChanges();
+            return _mapper.Map<AccountDto>(account);
         }
     }
 }
