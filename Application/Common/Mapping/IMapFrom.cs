@@ -10,10 +10,9 @@ namespace Application.Common.Mapping
         {
             if (typeof(T) == typeof(Permission))
             {
-                profile.CreateMap<Permission, Permissions.Dto.PermissionDto>()
-                    .ForMember(dest => dest.GroupPermissions, opt => opt.MapFrom(src =>
-                        src.AssignPermissions.Select(ap => ap.GroupPermission).ToList()
-                    ));
+                profile.CreateMap<Permission, Permissions.Dto.PermissionDto>();
+            //.ForMember(dest => dest.GroupPermissions, opt => opt.MapFrom(src =>
+            //    src.AssignPermissions.Select(ap => ap.GroupPermission).ToList()));
             }
             else if (typeof(T) == typeof(GroupPermission))
             {

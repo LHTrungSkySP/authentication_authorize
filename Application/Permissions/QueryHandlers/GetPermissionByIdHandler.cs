@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,7 +26,10 @@ namespace Application.Permissions.QueryHandlers
         public async Task<PermissionDto> Handle(GetPermissionById request, CancellationToken cancellationToken)
         {
             var tam1 = _context.Permissions.Where(e => e.Id == request.Id).Include(e => e.AssignPermissions).ThenInclude(ap => ap.GroupPermission).FirstOrDefault();
+            
+
             var tam = _mapper.Map<PermissionDto>(tam1);
+            tam.GroupPermissions = _mapper.Map<List<GroupPermissionDto>>(tam1.AssignPermissions.Select(x => x.GroupPermission));
             return tam;
         }
     }

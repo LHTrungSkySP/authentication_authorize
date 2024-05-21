@@ -17,7 +17,6 @@ namespace Application.GroupPermissions.Dto
         [JsonIgnore]
         public virtual List<AccountDto>? Accounts { get; set; } = new List<AccountDto>();
         [JsonIgnore]
-
         public virtual List<PermissionDto>? Permissions { get; set; } = new List<PermissionDto>();
     }
 }

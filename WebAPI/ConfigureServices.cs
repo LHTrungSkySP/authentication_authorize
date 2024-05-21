@@ -23,7 +23,11 @@ namespace Web.API
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
-
+            services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddSwaggerGen(config =>

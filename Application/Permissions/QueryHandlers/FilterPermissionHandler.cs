@@ -19,10 +19,7 @@ namespace Application.Permissions.QueryHandlers
         }
         public async Task<List<PermissionDto>> Handle(FilterPermission request, CancellationToken cancellationToken)
         {
-            var permissions = await _context.Permissions
-                .Include(p => p.AssignPermissions)
-                    .ThenInclude(ap => ap.GroupPermission)
-                .ToListAsync();
+            var permissions = await _context.Permissions.ToListAsync();
             var result = _mapper.Map<List<PermissionDto>>(permissions);
             return result;
         }
