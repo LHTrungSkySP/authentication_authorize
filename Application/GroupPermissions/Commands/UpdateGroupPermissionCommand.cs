@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace Application.GroupPermissions.Commands
 {
-    public class UpdateGroupPermissionCommand : GroupPermissionDto, IRequest<GroupPermissionDto>
+    public class UpdateGroupPermissionCommand : IRequest<GroupPermissionDto>
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public virtual List<int>? AssignGroupIds { get; set; } = new List<int>();
-        public virtual List<int>? AssignPermissionIds { get; set; } = new List<int>();
+        public List<int> PermissionIds { get; set; } = new List<int>();
+        public List<int> AccountIds { get; set; } = new List<int>();
     }
 }
+

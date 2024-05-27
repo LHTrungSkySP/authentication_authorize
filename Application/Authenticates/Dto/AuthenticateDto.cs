@@ -1,5 +1,5 @@
-﻿using Application.Accounts.Dto;
-using Application.Common.Mapping;
+﻿using Application.Common.Mapping;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Authenticates.Dto
 {
-    public class AuthenticateDto : IMapTo<AccountDto>
+    public class AuthenticateDto : IMapFrom<Account>
     {
         public int Id { get; set; }
         public string Name { get; set; }

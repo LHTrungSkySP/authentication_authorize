@@ -13,3 +13,4 @@ namespace Application.GroupPermissions.Queries
         public int Id { get; set; }
     }
 }
+

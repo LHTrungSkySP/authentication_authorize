@@ -1,11 +1,16 @@
-﻿using Application.Accounts.Commands;
+﻿
+using Application.Accounts.Commands;
 using Application.Accounts.Dto;
 using AutoMapper;
-using Azure.Core;
 using Common.Exceptions;
 using Domain.Entities;
 using Infrastructure;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Accounts.CommandHandlers
 {
@@ -21,16 +26,12 @@ namespace Application.Accounts.CommandHandlers
         }
         public async Task<AccountDto> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
         {
-            Account account = _context.Accounts.Find(request.Id) ?? throw new AppException(
-                ExceptionCode.Notfound,
-                "Không tìm thấy Account " + request.Id,
-                new[] {
-                    new ErrorDetail(nameof(request.Id),request.Id)
-                }
-            );
-            _context.Accounts.Remove(account);
-            _context.SaveChanges();
-            return _mapper.Map<AccountDto>(account);
+            Account? acc = await _context.Accounts.FindAsync(request.Id) ??
+                throw new AppException(ExceptionCode.Notfound, "Không tìm thấy Account");
+            _context.Accounts.Remove(acc);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return _mapper.Map<AccountDto>(acc);
         }
     }
 }

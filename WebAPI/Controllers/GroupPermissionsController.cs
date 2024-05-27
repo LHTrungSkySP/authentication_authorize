@@ -9,7 +9,6 @@ namespace Web.API.Controllers
     [AllowAnonymous]
     public class GroupPermissionsController : ApiControllerBase
     {
-
         [HttpPost()]
         public async Task<ActionResult<GroupPermissionDto>> Create(CreateGroupPermissionCommand registerRequest)
         {

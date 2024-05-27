@@ -1,11 +1,8 @@
 ﻿using Application.Accounts.Commands;
-using Application.Accounts.Queries;
-using Application.Accounts.Commands;
+using Application.Accounts.Dto;
 using Application.Accounts.Queries;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Web.API.Atributes;
-using Application.Accounts.Dto;
 
 namespace Web.API.Controllers
 {
@@ -37,6 +34,5 @@ namespace Web.API.Controllers
         {
             return await Mediator.Send(getById);
         }
-
     }
 }

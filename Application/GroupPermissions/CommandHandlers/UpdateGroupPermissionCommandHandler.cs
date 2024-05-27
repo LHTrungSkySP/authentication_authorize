@@ -1,23 +1,22 @@
 ﻿using Application.GroupPermissions.Commands;
 using Application.GroupPermissions.Dto;
-using Application.Accounts.Commands;
-using Application.Accounts.Dto;
+using AutoMapper;
+using Common.Exceptions;
+using Domain.Entities;
+using Infrastructure;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Entities;
-using AutoMapper;
-using Infrastructure;
-using Common.Exceptions;
 
 namespace Application.GroupPermissions.CommandHandlers
 {
     public class UpdateGroupPermissionCommandHandler : IRequestHandler<UpdateGroupPermissionCommand, GroupPermissionDto>
     {
-        private BanHangContext _context;
+        private readonly BanHangContext _context;
         private readonly IMapper _mapper;
 
         public UpdateGroupPermissionCommandHandler(BanHangContext context, IMapper mapper)
@@ -25,29 +24,41 @@ namespace Application.GroupPermissions.CommandHandlers
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<GroupPermissionDto> Handle(UpdateGroupPermissionCommand request, CancellationToken cancellationToken)
         {
-            // find item need update
-            GroupPermission groupPermission = _context.GroupPermissions.Find(request.Id, cancellationToken) ?? throw new AppException(
-                ExceptionCode.Notfound,
-                "Không tìm thấy GroupPermission"
-                );
+            var groupPermission = await _context.GroupPermissions
+                .Include(gp => gp.AssignPermissions)
+                .Include(gp => gp.AssignGroups)
+                .FirstOrDefaultAsync(gp => gp.Id == request.Id);
+
+            if (groupPermission == null)
+            {
+                throw new AppException(ExceptionCode.Notfound, $"Không tìm thấy GroupPermission {request.Title}",
+                    new[] { new ErrorDetail(nameof(request.Title), request.Title) });
+            }
+
             groupPermission.Title = request.Title;
             groupPermission.Description = request.Description;
-            groupPermission.AssignPermissions = request.AssignPermissionIds.Select(t => new AssignPermission()
+
+            var newAssignPermissions = request.PermissionIds.Select(id => new AssignPermission
             {
-                PermissionId = t,
-                GroupPermissionId = groupPermission.Id
+                GroupPermissionId = request.Id,
+                PermissionId = id
             }).ToList();
 
-            groupPermission.AssignGroups = request.AssignGroupIds.Select(t => new AssignGroup()
+            var newAssignGroups = request.AccountIds.Select(id => new AssignGroup
             {
-                AccountId = t,
-                GroupPermissionId = groupPermission.Id
+                GroupPermissionId = request.Id,
+                AccountId = id
             }).ToList();
+
+            groupPermission.AssignPermissions = newAssignPermissions;
+            groupPermission.AssignGroups = newAssignGroups;
 
             _context.GroupPermissions.Update(groupPermission);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(cancellationToken);
+
             return _mapper.Map<GroupPermissionDto>(groupPermission);
         }
     }

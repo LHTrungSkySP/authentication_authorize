@@ -10,6 +10,6 @@ namespace Application.GroupPermissions.Queries
 {
     public class FilterGroupPermission : IRequest<List<GroupPermissionDto>>
     {
-
     }
 }
+

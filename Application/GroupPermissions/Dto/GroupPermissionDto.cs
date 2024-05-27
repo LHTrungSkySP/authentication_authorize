@@ -1,10 +1,10 @@
 ﻿using Application.Common.Mapping;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.GroupPermissions.Dto
@@ -14,10 +14,16 @@ namespace Application.GroupPermissions.Dto
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        [JsonIgnore]
-        public virtual List<AccountDto>? Accounts { get; set; } = new List<AccountDto>();
-        [JsonIgnore]
+        public List<PermissionDto> Permissions { get; set; } = new List<PermissionDto>();
+        public List<AccountDto> Accounts { get; set; } = new List<AccountDto>();
 
-        public virtual List<PermissionDto>? Permissions { get; set; } = new List<PermissionDto>();
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<GroupPermission, GroupPermissionDto>()
+                .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src =>
+                    src.AssignPermissions.Select(ap => ap.Permission).ToList()))
+                .ForMember(dest => dest.Accounts, opt => opt.MapFrom(src =>
+                    src.AssignGroups.Select(ag => ag.Account).ToList()));
+        }
     }
 }
