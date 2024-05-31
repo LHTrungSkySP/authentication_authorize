@@ -9,13 +9,13 @@ namespace Web.API.Atributes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class AuthorizeAttribute: Attribute, IAuthorizationFilter
     {
-        private readonly string[] _permissions;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public AuthorizeFilter(Permissions[] permissions, IHttpContextAccessor httpContextAccessor)
+        private readonly Permissions[] _permissions;
+        public AuthorizeAttribute()
+        {
+        }
+        public AuthorizeAttribute(Permissions[] permissions)
         {
             _permissions = permissions;
-            _httpContextAccessor = httpContextAccessor;
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
